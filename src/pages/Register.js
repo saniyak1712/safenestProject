@@ -69,6 +69,7 @@ const styles = `
   .rg-field:nth-child(1){animation-delay:0.25s;}
   .rg-field:nth-child(2){animation-delay:0.3s;}
   .rg-field:nth-child(3){animation-delay:0.35s;}
+  .rg-field:nth-child(4){animation-delay:0.40s;}
   .rg-label { display:block;font-size:11.5px;font-weight:500;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px; }
   .rg-input-wrap { position:relative; }
   .rg-input-icon { position:absolute;left:16px;top:50%;transform:translateY(-50%);color:rgba(249,115,22,0.5);font-size:15px;pointer-events:none;transition:color 0.2s; }
@@ -83,6 +84,18 @@ const styles = `
   .rg-input:focus { background:rgba(249,115,22,0.06);border-color:rgba(249,115,22,0.5);box-shadow:0 0 0 3px rgba(249,115,22,0.1); }
   .rg-input.valid { border-color:rgba(52,211,153,0.4);background:rgba(52,211,153,0.04); }
   .rg-input:focus ~ .rg-input-icon, .rg-input.valid ~ .rg-input-icon { color:#f97316; }
+
+  /* Role select */
+  .rg-select {
+    width:100%;background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);border-radius:12px;
+    padding:13px 16px 13px 44px;color:#fff;
+    font-family:'DM Sans',sans-serif;font-size:15px;outline:none;
+    transition:all 0.25s;appearance:none;cursor:pointer;
+  }
+  .rg-select:focus { background:rgba(249,115,22,0.06);border-color:rgba(249,115,22,0.5);box-shadow:0 0 0 3px rgba(249,115,22,0.1); }
+  .rg-select option { background:#0a0f1e;color:#fff; }
+  .rg-select-arrow { position:absolute;right:16px;top:50%;transform:translateY(-50%);color:rgba(249,115,22,0.5);font-size:12px;pointer-events:none; }
 
   /* checkmark for valid */
   .rg-check { position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#34d399;font-size:15px;opacity:0;transition:opacity 0.2s; }
@@ -180,13 +193,14 @@ function getPasswordStrength(pwd) {
 }
 
 export default function Register() {
-  const [name, setName]       = useState("");
-  const [email, setEmail]     = useState("");
+  const [name, setName]         = useState("");
+  const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole]         = useState("student");
   const [showPass, setShowPass] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState("");
-  const [success, setSuccess] = useState(false);
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState("");
+  const [success, setSuccess]   = useState(false);
 
   const strength = getPasswordStrength(password);
 
@@ -196,8 +210,8 @@ export default function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
-    if (!isValidName)  { setError("Please enter your full name."); return; }
-    if (!isValidEmail) { setError("Please enter a valid email address."); return; }
+    if (!isValidName)        { setError("Please enter your full name."); return; }
+    if (!isValidEmail)       { setError("Please enter a valid email address."); return; }
     if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
 
     setLoading(true);
@@ -205,7 +219,7 @@ export default function Register() {
       const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, role: "student" }),
+        body: JSON.stringify({ name, email, password, role }),
       });
       if (!res.ok) {
         const d = await res.json();
@@ -219,7 +233,7 @@ export default function Register() {
     }
   };
 
-  const filledSteps = [isValidName, isValidEmail, password.length >= 6];
+  const filledSteps = [isValidName, isValidEmail, password.length >= 6, !!role];
 
   return (
     <>
@@ -332,6 +346,24 @@ export default function Register() {
                       </div>
                     </>
                   )}
+                </div>
+
+                {/* Role Selection */}
+                <div className="rg-field">
+                  <label className="rg-label" htmlFor="register-role">Register As</label>
+                  <div className="rg-input-wrap">
+                    <select
+                      id="register-role"
+                      className="rg-select"
+                      value={role}
+                      onChange={e => setRole(e.target.value)}
+                    >
+                      <option value="student">🎓 Student</option>
+                      <option value="admin">🛡 Admin</option>
+                    </select>
+                    <span className="rg-input-icon">👤</span>
+                    <span className="rg-select-arrow">▾</span>
+                  </div>
                 </div>
 
                 {/* Submit */}
