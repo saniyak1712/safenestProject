@@ -196,7 +196,6 @@ export default function Register() {
   const [name, setName]         = useState("");
   const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole]         = useState("student");
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading]   = useState(false);
   const [error, setError]       = useState("");
@@ -219,7 +218,7 @@ export default function Register() {
       const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, role }),
+        body: JSON.stringify({ name, email, password, role: "student" }),
       });
       if (!res.ok) {
         const d = await res.json();
@@ -233,7 +232,7 @@ export default function Register() {
     }
   };
 
-  const filledSteps = [isValidName, isValidEmail, password.length >= 6, !!role];
+  const filledSteps = [isValidName, isValidEmail, password.length >= 6];
 
   return (
     <>
@@ -346,24 +345,6 @@ export default function Register() {
                       </div>
                     </>
                   )}
-                </div>
-
-                {/* Role Selection */}
-                <div className="rg-field">
-                  <label className="rg-label" htmlFor="register-role">Register As</label>
-                  <div className="rg-input-wrap">
-                    <select
-                      id="register-role"
-                      className="rg-select"
-                      value={role}
-                      onChange={e => setRole(e.target.value)}
-                    >
-                      <option value="student">🎓 Student</option>
-                      <option value="admin">🛡 Admin</option>
-                    </select>
-                    <span className="rg-input-icon">👤</span>
-                    <span className="rg-select-arrow">▾</span>
-                  </div>
                 </div>
 
                 {/* Submit */}

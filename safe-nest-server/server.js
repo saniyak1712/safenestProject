@@ -74,6 +74,9 @@ app.use("/api/chatbot", chatbotRoutes);
 const qrRoutes = require("./routes/qrRoutes");
 app.use("/api/qr", qrRoutes);
 
+const superAdminRoutes = require("./routes/superAdminRoutes");
+app.use("/api/superadmin", superAdminRoutes);
+
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });

@@ -41,7 +41,8 @@ export function authHeaders(extra = {}) {
 }
 
 export function dashboardPathFor(role) {
-  if (role === "admin" || role === "superAdmin") return "/admin";
+  if (role === "superAdmin") return "/superadmin";
+  if (role === "admin") return "/admin";
   if (role === "student") return "/student";
   return "/";
 }
