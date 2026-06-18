@@ -11,7 +11,7 @@ const router = express.Router();
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, role, hostelId } = req.body;
-    const allowedRoles = ["admin", "student"];
+    const allowedRoles = ["student"];           // ← admin/superAdmin can never self-register
     const normalizedRole = allowedRoles.includes(role) ? role : "student";
     const normalizedEmail = email?.toLowerCase().trim();
 

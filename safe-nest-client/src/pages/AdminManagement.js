@@ -131,7 +131,7 @@ export default function AdminManagement() {
 
   const fetchAdmins = useCallback(async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/superadmin/admins`, { headers: authHeaders() });
+      const res = await fetch(`${API_BASE_URL}/api/admin/all-admins`, { headers: authHeaders() });
       if (res.status === 401) { clearAuth(); navigate("/"); return; }
       const data = await res.json();
       setAdmins(Array.isArray(data) ? data : []);
@@ -152,7 +152,7 @@ export default function AdminManagement() {
     }
     setCreating(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/superadmin/admins`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/create-admin`, {
         method: "POST",
         headers: authHeaders(),
         body: JSON.stringify(form),
@@ -173,7 +173,7 @@ export default function AdminManagement() {
   const handleDelete = async (adminId, adminName) => {
     if (!window.confirm(`Delete admin "${adminName}"? This cannot be undone.`)) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/superadmin/admins/${adminId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/${adminId}`, {
         method: "DELETE",
         headers: authHeaders(),
       });
@@ -191,7 +191,7 @@ export default function AdminManagement() {
     if (!newPw || newPw.length < 6) return showAlert("error", "Password must be at least 6 characters");
     setChangingPw(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/superadmin/admins/${pwModal.adminId}/password`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/${pwModal.adminId}/password`, {
         method: "PUT",
         headers: authHeaders(),
         body: JSON.stringify({ newPassword: newPw }),
