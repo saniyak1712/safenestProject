@@ -15,9 +15,12 @@ const allowedOrigins = (process.env.CLIENT_URL || process.env.FRONTEND_URL || "h
 
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
+    // Allow requests with no origin (Postman, mobile apps, server-to-server)
+    if (!origin) return callback(null, true);
+    // Allow any Vercel deployment (previews + production)
+    if (origin.endsWith(".vercel.app")) return callback(null, true);
+    // Allow exact origins from CLIENT_URL env var
+    if (allowedOrigins.includes(origin)) return callback(null, true);
     return callback(new Error("Not allowed by CORS"));
   },
   credentials: true,
